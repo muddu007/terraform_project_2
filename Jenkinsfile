@@ -26,9 +26,8 @@ pipeline {
                        withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'aws-crendentails-rwagh']]){
                             dir('infra') {
                             sh 'echo "=================Terraform Init=================="'
-                            sh 'pwd'
-                            sh 'ls -la'
-                            sh 'grep -RIn 'backend "s3"\|dev-proj-1-remote-state-bucket-123456''
+                            sh 'rm -rf .terraform .terraform.lock.hcl'
+                            sh 'terraform init -reconfigure'
                             sh 'terraform init'
                         }
                     }
