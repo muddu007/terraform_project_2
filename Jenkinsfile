@@ -22,14 +22,35 @@ pipeline {
         }
 
         stage('Terraform Init') {
-                    steps {
-                       withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'aws-crendentails-rwagh']]){
-                            dir('infra') {
-                            sh 'echo "=================Terraform Init=================="'               
-                            sh 'terraform init'
-                        }
+            steps {
+                withCredentials([[
+                    $class: 'AmazonWebServicesCredentialsBinding',
+                    credentialsId: 'aws-crendentails-rwagh'
+                ]]) {
+
+                    dir('infra') {
+
+                        sh '''
+                            echo "=================DEBUGGING BACKEND=================="
+                            echo "Current Directory:"
+                            pwd
+
+                            echo "Listing Terraform files:"
+                            find . -name "*.tf"
+
+                            echo "Searching for S3 backend or bucket name:"
+                            grep -RIn --exclude-dir=.terraform 'backend "s3"|dev-proj-1-remote-state-bucket-123456' . || true
+
+                            echo "===================================================="
+
+                            echo "Removing old cache..."
+                            rm -rf .terraform .terraform.lock.hcl
+
+                            terraform init -reconfigure
+                        '''
                     }
                 }
+            }
         }
 
         stage('Terraform Plan') {
