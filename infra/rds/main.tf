@@ -14,7 +14,7 @@ resource "aws_db_subnet_group" "dev_proje_1_db_subnet_group" {
 
 resource "aws_db_instance" "default" {
   allocated_storage       = 10
-  storage_type            = "gp2"
+  #storage_type            = "gp2"
   engine                  = "mysql"
  # engine_version          = "5.7"
   instance_class          = "db.t4g.micro"
