@@ -1,13 +1,31 @@
-#! /bin/bash
+#!/bin/bash
 # shellcheck disable=SC2164
 cd /home/ubuntu
-yes | sudo apt update
-yes | sudo apt install python3 python3-pip
-git clone https://github.com/rahulwagh/python-mysql-db-proj-1.git
-sleep 20
-# shellcheck disable=SC2164
+
+# Update package list and install dependencies
+sudo apt update -y
+sudo apt install -y python3-venv python3-full git
+
+# Clone the repository
+git clone https://github.com/muddu007/python-mysql-db-proj-1
+
+# Navigate to project directory
 cd python-mysql-db-proj-1
-pip3 install -r requirements.txt
-echo 'Waiting for 30 seconds before running the app.py'
-setsid python3 -u app.py &
+
+# Create and activate virtual environment
+python3 -m venv venv
+source venv/bin/activate
+
+# Upgrade pip and install requirements
+pip install --upgrade pip setuptools wheel
+pip install -r requirements.txt
+
+# Run the application in background
+echo 'Starting the application...'
+nohup python -u app.py > app.log 2>&1 &
+
+# Wait for application to start
+echo 'Waiting for 30 seconds for the application to start...'
 sleep 30
+
+echo 'Application started successfully!'
